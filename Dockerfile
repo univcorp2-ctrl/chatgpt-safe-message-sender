@@ -25,6 +25,7 @@ ENV PYTHONUNBUFFERED=1
 
 COPY pyproject.toml README.md ./
 COPY src ./src
+COPY sample_messages ./sample_messages
 RUN python -m pip install --upgrade pip \
     && pip install --no-cache-dir .
 
