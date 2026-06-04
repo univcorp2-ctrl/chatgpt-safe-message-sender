@@ -9,8 +9,8 @@ ChatGPT の Web UI をブラウザ操作で自動化するのではなく、Open
 - 指定文言を OpenAI Responses API に送信する
 - `--execute` を付けない限り API 送信しない安全な dry-run
 - 送信 payload または API 応答を JSON として保存
-- GitHub Actions で lint / format check / test / dry-run artifact 生成
-- 手動実行の live smoke workflow で、本番 API への単発疎通確認
+- mock テスト、ruff、dry-run で実装を検証
+- 手動 live smoke で、本番 API への単発疎通確認
 
 ## できないこと
 
@@ -57,19 +57,23 @@ safe-send \
 safe-send --message-file sample_messages/hello.txt --execute --output outputs/response.json
 ```
 
-## GitHub Actions
+## GitHub Actions / CI
 
-- `ci.yml`: push / pull_request / workflow_dispatch で lint、format check、test、dry-run artifact を実行
-- `live-smoke.yml`: workflow_dispatch で `OPENAI_API_KEY` secret が設定されている場合だけ、本番 API に単発送信
+GitHub Actions workflow 本体は、automation token の workflow 作成権限不足とみられる `404: Not Found` により `.github/workflows/*` へ直接作成できませんでした。復旧用テンプレートは以下に保存しています。
 
-Artifact 名:
+- `docs/workflows/ci.yml`
+- `docs/workflows/live-smoke.yml`
+- `docs/ci-recovery.md`
 
-- `safe-message-sender-dry-run-output`
-- `safe-message-sender-live-smoke-output`
+ローカルまたは Codespaces では、次で CI 相当の確認ができます。
+
+```bash
+bash scripts/run_local_ci.sh
+```
 
 ## Secrets
 
-GitHub Actions の live smoke を使う場合のみ、Repository Secret に以下を設定します。
+live smoke を使う場合のみ、Repository Secret に以下を設定します。
 
 | Secret | 用途 |
 | --- | --- |
@@ -91,4 +95,4 @@ flowchart LR
 
 ## 本番テストについて
 
-このリポジトリは、本番 API を呼べる実装と手動 workflow を含みます。ただし、実際に OpenAI API を呼ぶには `OPENAI_API_KEY` が必要です。Secret が未設定の状態では、CI は mock / dry-run までを自動確認します。
+このリポジトリは、本番 API を呼べる実装と live smoke workflow テンプレートを含みます。ただし、実際に OpenAI API を呼ぶには `OPENAI_API_KEY` が必要です。Secret が未設定の状態では、mock / dry-run までを確認できます。
