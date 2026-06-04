@@ -32,15 +32,24 @@ jobs:
         run: ruff format --check .
 
       - name: Test
-        run: pytest
+        run: pytest --junitxml outputs/pytest-junit.xml
 
       - name: Dry-run sample message
         run: |
           safe-send --message-file sample_messages/hello.txt --output outputs/dry-run-payload.json
           cat outputs/dry-run-payload.json
 
-      - name: Upload dry-run artifact
+      - name: Generate validation report
+        if: always()
+        run: python scripts/generate_validation_report.py || true
+
+      - name: Upload validation artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: safe-message-sender-dry-run-output
-          path: outputs/dry-run-payload.json
+          name: safe-message-sender-validation-output
+          path: |
+            outputs/validation-report.json
+            outputs/pytest-junit.xml
+            outputs/dry-run-payload.json
+          if-no-files-found: ignore
