@@ -1,0 +1,16 @@
+{
+  "name": "chatgpt-safe-message-sender",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "charliermarsh.ruff"
+      ]
+    }
+  },
+  "postCreateCommand": "python -m pip install --upgrade pip && pip install -e .[dev]",
+  "remoteEnv": {
+    "OPENAI_MODEL": "gpt-4.1-mini"
+  }
+}
