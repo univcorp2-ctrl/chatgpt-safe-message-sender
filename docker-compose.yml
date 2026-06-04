@@ -1,0 +1,14 @@
+services:
+  safe-message-sender:
+    build: .
+    image: chatgpt-safe-message-sender:local
+    environment:
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    volumes:
+      - ./outputs:/app/outputs
+    command:
+      - --message-file
+      - /app/sample_messages/hello.txt
+      - --output
+      - /app/outputs/docker-dry-run.json
