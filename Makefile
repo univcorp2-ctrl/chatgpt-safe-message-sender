@@ -1,4 +1,4 @@
-.PHONY: install lint format-check test dry-run integration live-smoke verify docker-build clean
+.PHONY: install lint format-check test dry-run integration live-smoke report verify docker-build clean
 
 install:
 	python -m pip install --upgrade pip
@@ -22,6 +22,9 @@ integration:
 
 live-smoke:
 	python scripts/live_smoke_test.py
+
+report:
+	python scripts/generate_validation_report.py
 
 verify: install lint format-check test dry-run
 
