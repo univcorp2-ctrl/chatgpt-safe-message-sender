@@ -18,29 +18,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -e .[dev]
-
       - name: Run one live smoke request when secret exists
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: ${{ github.event.inputs.model }}
           LIVE_SMOKE_MESSAGE: ${{ github.event.inputs.message }}
         run: python scripts/live_smoke_test.py
-
-      - name: Upload live smoke artifact
+      - name: Upload live smoke artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: safe-message-sender-live-smoke-output
-          path: outputs/live-smoke-response.json
+          path: |
+            outputs/live-smoke-summary.json
+            outputs/live-smoke-response.json
           if-no-files-found: ignore
