@@ -8,7 +8,7 @@
 2. dry-run で API 送信前の payload を確認できる
 3. mock API integration test で live 実行経路を検証できる
 4. `OPENAI_API_KEY` を設定すれば本番 API に単発送信できる
-5. CI 相当の検証を `make verify` / `bash scripts/run_local_ci.sh` / `docker build` で実行できる
+5. CI 相当の検証を `make verify` / `make report` / `bash scripts/run_local_ci.sh` / `docker build` で実行できる
 6. GitHub Actions workflow は `docs/workflows` に保存済みで、workflow scope 復旧後に配置できる
 
 ## 検証コマンド
@@ -16,6 +16,18 @@
 ```bash
 make verify
 ```
+
+レポート付きで確認する場合:
+
+```bash
+make report
+```
+
+生成物:
+
+- `outputs/validation-report.json`
+- `outputs/pytest-junit.xml`
+- `outputs/dry-run-payload.json`
 
 または:
 
@@ -35,6 +47,17 @@ docker build -t chatgpt-safe-message-sender:local .
 export OPENAI_API_KEY="sk-..."
 safe-send --message "本番APIの単発テストです。短く返信してください。" --execute --output outputs/response.json
 ```
+
+または、summary 付き smoke test:
+
+```bash
+python scripts/live_smoke_test.py
+```
+
+生成物:
+
+- `outputs/live-smoke-summary.json`
+- `outputs/live-smoke-response.json`（API key 設定時のみ）
 
 ## なぜブラウザ自動操作ではないか
 
